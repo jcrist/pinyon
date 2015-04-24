@@ -1,8 +1,7 @@
 from collections import deque
 
-from .core import VAR, END
-from .pattern import PatternSet
-from .util import copy_doc
+from .core import VAR, END, PatternSet
+from ..util import copy_doc
 
 
 @copy_doc(PatternSet)

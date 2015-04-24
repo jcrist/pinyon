@@ -1,5 +1,6 @@
 def copy_doc(wrap_func, strip_context=False):
     """Copy the docstring from one function to another.
+
     If `strip_context` is `True`, removes the line `"context : Context"` from
     the docstring"""
 

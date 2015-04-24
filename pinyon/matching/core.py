@@ -1,3 +1,6 @@
+from collections import deque
+
+
 class Pattern(object):
     """A pattern.
 
@@ -92,3 +95,73 @@ class PatternSet(object):
         for pat, subs in self.match_iter(term):
             return pat, subs
         return None, None
+
+
+class Token(object):
+    """A token object.
+
+    Used to express certain objects in the traversal of a term or pattern."""
+
+    def __init__(self, name):
+        self.name = name
+
+    def __repr__(self):
+        return self.name
+
+
+# A variable to represent *all* variables in a discrimination net
+VAR = Token('?')
+# Represents the end of the traversal of an expression. We can't use `None`,
+# 'False', etc... here, as anything may be an argument to a function.
+END = Token('end')
+
+
+class Traverser(object):
+    """Stack based preorder traversal of terms.
+
+    This provides a copyable traversal object, which can be used to store
+    choice points when backtracking."""
+
+    def __init__(self, context, term, stack=None):
+        self.term = term
+        self.context = context
+        if not stack:
+            self._stack = deque([END])
+        else:
+            self._stack = stack
+
+    def __iter__(self):
+        while self.term is not END:
+            yield self.term
+            self.next()
+
+    def copy(self):
+        """Copy the traverser in its current state.
+
+        This allows the traversal to be pushed onto a stack, for easy
+        backtracking."""
+
+        return Traverser(self.context, self.term, deque(self._stack))
+
+    def next(self):
+        """Proceed to the next term in the preorder traversal."""
+
+        subterms = self.context.args(self.term)
+        if not subterms:
+            # No subterms, pop off stack
+            self.term = self._stack.pop()
+        else:
+            self.term = subterms[0]
+            self._stack.extend(reversed(subterms[1:]))
+
+    @property
+    def current(self):
+        return self.context.head(self.term)
+
+    @property
+    def arity(self):
+        return len(self.context.args(self.term))
+
+    def skip(self):
+        """Skip over all subterms of the current level in the traversal"""
+        self.term = self._stack.pop()

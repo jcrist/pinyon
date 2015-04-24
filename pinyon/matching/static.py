@@ -1,6 +1,5 @@
-from .core import VAR
-from .pattern import PatternSet
-from .util import copy_doc
+from .core import VAR, PatternSet
+from ..util import copy_doc
 
 
 @copy_doc(PatternSet)

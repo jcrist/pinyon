@@ -1,5 +1,27 @@
-from collections import Iterator, deque
+from collections import Iterator
 from functools import reduce
+
+from .matching import (Traverser, Pattern, PatternSet, StaticPatternSet,
+        DynamicPatternSet)
+from .util import copy_doc
+
+
+class Engine(object):
+    """Main entry point for Pinyon"""
+
+    def __init__(self, context):
+        self.context = context
+
+    @copy_doc(Pattern, True)
+    def pattern(self, pat, vars=()):
+        return Pattern(self.context, pat, vars)
+
+    @copy_doc(PatternSet, True)
+    def patternset(self, patterns, type='dynamic'):
+        if type == 'dynamic':
+            return DynamicPatternSet(self.context, patterns)
+        else:
+            return StaticPatternSet(self.context, patterns)
 
 
 class Context(object):
@@ -40,83 +62,13 @@ class Context(object):
             return PreorderTraversal(self, term, variant)
 
 
-class Token(object):
-    """A token object.
-
-    Used to express certain objects in the traversal of a term or pattern."""
-
-    def __init__(self, name):
-        self.name = name
-
-    def __repr__(self):
-        return self.name
-
-
-# A variable to represent *all* variables in a discrimination net
-VAR = Token('?')
-# Represents the end of the traversal of an expression. We can't use `None`,
-# 'False', etc... here, as anything may be an argument to a function.
-END = Token('end')
-
-
-# TODO: It would be really nice to get rid of one of the following traversal
-# implementations. The stack based implementation is only used by the dynamic
-# pattern sets, but a way to store the iteration state is necessary for
-# backtracking. Conversely, the recursive algorithm is only necessary for the
-# static pattern sets, as the path index of the current term is much faster to
-# find in a recursive fashion.  I'm fairly certain there must be a way to
-# eliminate one of these...
-class Traverser(object):
-    """Stack based preorder traversal of terms.
-
-    This provides a copyable traversal object, which can be used to store
-    choice points when backtracking."""
-
-    def __init__(self, context, term, stack=None):
-        self.term = term
-        self.context = context
-        if not stack:
-            self._stack = deque([END])
-        else:
-            self._stack = stack
-
-    def __iter__(self):
-        while self.term is not END:
-            yield self.term
-            self.next()
-
-    def copy(self):
-        """Copy the traverser in its current state.
-
-        This allows the traversal to be pushed onto a stack, for easy
-        backtracking."""
-
-        return Traverser(self.context, self.term, deque(self._stack))
-
-    def next(self):
-        """Proceed to the next term in the preorder traversal."""
-
-        subterms = self.context.args(self.term)
-        if not subterms:
-            # No subterms, pop off stack
-            self.term = self._stack.pop()
-        else:
-            self.term = subterms[0]
-            self._stack.extend(reversed(subterms[1:]))
-
-    @property
-    def current(self):
-        return self.context.head(self.term)
-
-    @property
-    def arity(self):
-        return len(self.context.args(self.term))
-
-    def skip(self):
-        """Skip over all subterms of the current level in the traversal"""
-        self.term = self._stack.pop()
-
-
+# TODO: It would be really nice to get rid of one of the traversal
+# implementations. The stack based implementation (`Traverser`, imported from
+# matching/core.py) is only used by the dynamic pattern sets, but a way to
+# store the iteration state is necessary for backtracking. Conversely, the
+# recursive algorithm is only necessary for the static pattern sets, as the
+# path index of the current term is much faster to find in a recursive fashion.
+# I'm fairly certain there must be a way to eliminate one of these...
 class PreorderTraversal(Iterator):
     """Preorder traversal of a generic term"""
 
