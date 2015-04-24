@@ -21,7 +21,7 @@ class Pattern(object):
         """Initialized once a context is set"""
         path_lookup = {}
         varlist = []
-        for term, path in context.preorder_traversal(self.pat, True):
+        for term, path in context.traverse(self.pat, 'path'):
             if term in self.vars:
                 path_lookup.setdefault(term, []).append(path)
                 varlist.append(term)

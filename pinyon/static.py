@@ -38,7 +38,7 @@ class StaticPatternSet(PatternSet):
 
         net = self._net
         head = self.context.head
-        pot = self.context.preorder_traversal(t, True)
+        pot = self.context.traverse(t, 'path')
         path_lookup = {}
         for term, ind in pot:
             var_val = net.get(VAR, None)
@@ -130,11 +130,12 @@ def flatten_with_arity(context, pattern):
 
     vars = pattern.vars
     def _helper(pot):
-        for t in pot:
+        for t, a in pot:
             if t in vars:
-                t = VAR
-            yield t, pot.arity
-    return list(_helper(context.traverser(pattern.pat)))
+                yield VAR, a
+            else:
+                yield context.head(t), a
+    return list(_helper(context.traverse(pattern.pat, 'arity')))
 
 
 def next_terms(M):

@@ -30,7 +30,7 @@ class DynamicPatternSet(PatternSet):
         curr_node = self._net
         ind = len(self.patterns)
         # List of variables, in order they appear in the POT of the term
-        for t in self.context.traverser(pat.pat):
+        for t in map(self.context.head, self.context.traverse(pat.pat)):
             prev_node = curr_node
             if t in vars:
                 t = VAR
@@ -45,7 +45,7 @@ class DynamicPatternSet(PatternSet):
 
     @copy_doc(PatternSet.match_iter)
     def match_iter(self, term):
-        S = self.context.traverser(term)
+        S = self.context.traverse(term, 'copyable')
         for m, syms in _match(S, self._net):
             for i in m:
                 pat = self.patterns[i]
