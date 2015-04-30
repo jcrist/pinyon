@@ -1,6 +1,6 @@
-from collections import Iterator
-from functools import reduce
+from __future__ import absolute_import, division, print_function
 
+from .compatibility import reduce, Iterator
 from .matching import (Traverser, Pattern, PatternSet, StaticPatternSet,
         DynamicPatternSet)
 from .util import copy_doc

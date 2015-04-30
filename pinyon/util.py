@@ -1,3 +1,6 @@
+from __future__ import absolute_import, division, print_function
+
+
 def copy_doc(wrap_func, strip_context=False):
     """Copy the docstring from one function to another.
 

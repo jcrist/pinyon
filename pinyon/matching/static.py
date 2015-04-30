@@ -1,8 +1,9 @@
+from __future__ import absolute_import, division, print_function
+
 from .core import VAR, PatternSet
 from ..util import copy_doc
 
 
-@copy_doc(PatternSet)
 class StaticPatternSet(PatternSet):
     """A set of patterns.
 

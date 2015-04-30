@@ -1,8 +1,10 @@
 """An example term implementation. This implements terms used for dask"""
 
+from __future__ import absolute_import, division, print_function
 from itertools import count
 
 from pinyon.core import Context
+
 
 def istask(x):
     """ Is x a runnable task?
@@ -77,7 +79,7 @@ def funcify(args, task):
     """Compile a task into a callable function"""
 
     lookup = {}
-    names = ("_gensym_%d" %i for i in count(1))
+    names = ("_gensym_%d" % i for i in count(1))
     arg_string = ", ".join(str(i) for i in args)
     code_string = _compile(args, task, lookup, names)
     code = "lambda {0}: {1}".format(arg_string, code_string)

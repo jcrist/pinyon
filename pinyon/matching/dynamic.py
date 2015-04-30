@@ -1,11 +1,21 @@
+from __future__ import absolute_import, division, print_function
 from collections import deque
 
 from .core import VAR, END, PatternSet
 from ..util import copy_doc
 
 
-@copy_doc(PatternSet)
 class DynamicPatternSet(PatternSet):
+    """A set of patterns.
+
+    Forms a structure for fast matching over a set of patterns. This allows for
+    matching of terms to patterns for many patterns at the same time.
+
+    Attributes
+    ----------
+    patterns : list
+        A list of `Pattern`s included in the `PatternSet`.
+    """
 
     def __init__(self, context, patterns):
         self.context = context
