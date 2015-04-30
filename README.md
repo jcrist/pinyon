@@ -1,5 +1,7 @@
 # Pinyon
 
+[![Build Status](https://travis-ci.org/jcrist/pinyon.svg)](https://travis-ci.org/jcrist/pinyon)
+
 A term rewriting engine for Python. Currently under development, not
 recommended for use at this time:)
 
