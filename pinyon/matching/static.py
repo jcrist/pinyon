@@ -190,7 +190,7 @@ def build_automata(context, patterns):
     # Replace leaf dicts with sets of the matching patterns
     for i, lk in enumerate(paths):
         if lk == {}:
-            paths[i] = tuple(set(m.rule for m in L[i].items))
+            paths[i] = tuple(sorted(set(m.rule for m in L[i].items)))
 
     # Finalize the automata
     for lk in paths:

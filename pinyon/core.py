@@ -17,7 +17,7 @@ class Engine(object):
         return Pattern(self.context, pat, vars)
 
     @copy_doc(PatternSet, True)
-    def patternset(self, patterns, type='dynamic'):
+    def patternset(self, patterns, type='static'):
         if type == 'dynamic':
             return DynamicPatternSet(self.context, patterns)
         else:

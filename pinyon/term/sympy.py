@@ -3,17 +3,16 @@ from pinyon.core import Context
 from sympy import Symbol, MatrixSymbol, Number
 
 
-def is_leaf(expr):
+def isleaf(expr):
     """Returns True if the expr is a leaf node else False"""
 
-    _leaves = (Symbol, MatrixSymbol, Number)
-    return isinstance(expr, _leaves)
+    return isinstance(expr, (Symbol, MatrixSymbol, Number))
 
 
 def head(term):
     """Return the top level node of a term"""
 
-    if is_leaf(term):
+    if isleaf(term):
         return term
     else:
         return type(term)
